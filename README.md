@@ -26,12 +26,22 @@ Creative or Custom, and this mod doesn't change it. The game's mod check
 (`CheckForMods`) logs a warning and marks the world as modded for people
 joining, but achievements still unlocked in testing.
 
-## Install
+## Install with Mod Loader
 
-Download `NoBuildingStability.zip` from the [Releases](../../releases) page.
-Extract the three files (`NoBuildingStability_P.pak`, `.utoc` and `.ucas`) into
-`RSDragonwilds\Content\Paks\~mods` in the game folder. Create the `~mods` folder
-if it doesn't exist.
+In [Mod Loader](https://github.com/MichaelRyan2319/ModLoader), add RuneScape:
+Dragonwilds, then add the mod
+`MichaelRyan2319/RSDragonwilds-NoBuildingStability`. Mod Loader 1.0.1 or later
+sets the game's mods folder to its inner `RSDragonwilds` folder (the one with
+`Binaries` and `Content` in it). If you added the game with an older version,
+edit it and choose that folder.
+
+## Install by hand
+
+Download `NoBuildingStability.zip` from the [Releases](../../releases) page. In
+Steam, right-click RuneScape: Dragonwilds > Manage > Browse local files, then
+open the `RSDragonwilds` folder (the one with `Binaries` and `Content` in it)
+and extract the zip there. The three files (`NoBuildingStability_P.pak`,
+`.utoc` and `.ucas`) end up in `Content\Paks\~mods`.
 
 The release is built for game build 26162923 (Unreal Engine 5.6). On that build
 the mod mounted and achievements kept unlocking with it installed. After a game
