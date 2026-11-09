@@ -26,31 +26,34 @@ Creative or Custom, and this mod doesn't change it. The game's mod check
 (`CheckForMods`) logs a warning and marks the world as modded for people
 joining, but achievements still unlocked in testing.
 
-## Build and install
+## Install
 
-This repo has no prebuilt pak: the mod is a modified copy of a game asset, so
-you build it from your own copy of the game. You need Python 3. Only the
-standard library is used.
+Download `NoBuildingStability.zip` from the [Releases](../../releases) page.
+Extract the three files (`NoBuildingStability_P.pak`, `.utoc` and `.ucas`) into
+`RSDragonwilds\Content\Paks\~mods` in the game folder. Create the `~mods` folder
+if it doesn't exist.
 
-The script finds the game from its own location: the game folder must be two
-folders above `build_mod.py`. The easiest setup is to clone this repo into a
-`ModSource` folder inside the game folder:
+The release is built for game build 26162923 (Unreal Engine 5.6). On that build
+the mod mounted and achievements kept unlocking with it installed. After a game
+update, a new release may be needed, or you can build the mod yourself (below).
+
+## Build it yourself
+
+The mod replaces a whole asset, so after a game update it should be rebuilt from
+the new version. You need Python 3. Only the standard library is used.
 
 ```
-cd "C:\Program Files (x86)\Steam\steamapps\common\RSDragonwilds"
-git clone https://github.com/MichaelRyan2319/RSDragonwilds-NoBuildingStability ModSource\NoBuildingStability
-python ModSource\NoBuildingStability\build_mod.py
+python build_mod.py --game "C:\Program Files (x86)\Steam\steamapps\common\RSDragonwilds"
 ```
 
-The script writes `NoBuildingStability_P.pak`, `.utoc` and `.ucas` to
-`RSDragonwilds\Content\Paks\~mods`. Use `--out DIR` to write them somewhere else.
+`--game` is the folder that contains `RSDragonwilds.exe`. Without it, the script
+looks two folders above itself, so cloning this repo to
+`<game>\ModSource\NoBuildingStability` also works. The script writes the three
+files to `RSDragonwilds\Content\Paks\~mods`. Use `--out DIR` to write them
+somewhere else.
 
-Re-run the script after every game update. The mod replaces a whole asset, so it
-has to be rebuilt from the current version. If the asset's layout has changed,
-the script stops with an error instead of writing a broken mod.
-
-Built for game build 26162923 (Unreal Engine 5.6). On that build the mod mounted
-and achievements kept unlocking with it installed.
+If the asset's layout has changed, the script stops with an error instead of
+writing a broken mod.
 
 ## Uninstall
 

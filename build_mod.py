@@ -19,8 +19,10 @@ HOW
   Nothing is written to your saves and no game file is modified.
 
 USAGE
-  python build_mod.py            build into <game>/RSDragonwilds/Content/Paks/~mods
-  python build_mod.py --out DIR  build somewhere else
+  python build_mod.py             build into <game>/RSDragonwilds/Content/Paks/~mods
+  python build_mod.py --game DIR  use the game installed in DIR (default: the
+                                  folder two levels above this script)
+  python build_mod.py --out DIR   build somewhere else
 
   Re-run after a game update: the mod replaces a whole asset, so it should be
   rebuilt from the current version. The script stops with an error, rather than
@@ -35,9 +37,8 @@ import struct
 import sys
 from pathlib import Path
 
-GAME_ROOT = Path(__file__).resolve().parents[2]
-PAKS = GAME_ROOT / "RSDragonwilds" / "Content" / "Paks"
-BASE_UTOC = PAKS / "RSDragonwilds-Windows.utoc"
+_SCRIPT = Path(__file__).resolve()
+DEFAULT_GAME_ROOT = _SCRIPT.parents[2] if len(_SCRIPT.parents) > 2 else _SCRIPT.parent
 MOD_NAME = "NoBuildingStability_P"
 
 DIFFICULTY_DIR = "RSDragonwilds/Content/Gameplay/DifficultySettings/Player/"
@@ -471,19 +472,28 @@ def write_pak(out_dir):
 
 def main():
     parser = argparse.ArgumentParser(description="Build the NoBuildingStability mod.")
-    parser.add_argument("--out", type=Path, default=PAKS / "~mods", help="output folder")
+    parser.add_argument("--game", type=Path, default=DEFAULT_GAME_ROOT,
+                        help="game folder, the one containing RSDragonwilds.exe "
+                             "(default: two folders above this script)")
+    parser.add_argument("--out", type=Path,
+                        help="output folder (default: <game>/RSDragonwilds/Content/Paks/~mods)")
     args = parser.parse_args()
 
-    base = BaseContainer(BASE_UTOC)
+    paks = args.game / "RSDragonwilds" / "Content" / "Paks"
+    base_utoc = paks / "RSDragonwilds-Windows.utoc"
+    require(base_utoc.is_file(), f"{base_utoc} not found; pass the game folder with --game")
+    out = args.out or paks / "~mods"
+
+    base = BaseContainer(base_utoc)
     asset = patch_asset(base.read_file(TARGET), base.read_file(NAME_DONOR))
     chunk_id = base.chunk_id_of(TARGET)
     package_id = struct.unpack("<Q", chunk_id[:8])[0]
     imports = package_store_imports(base.container_header(), package_id)
 
-    args.out.mkdir(parents=True, exist_ok=True)
-    write_container(args.out, TARGET, chunk_id, asset, imports)
-    write_pak(args.out)
-    print(f"Built {MOD_NAME}.pak/.utoc/.ucas in {args.out}")
+    out.mkdir(parents=True, exist_ok=True)
+    write_container(out, TARGET, chunk_id, asset, imports)
+    write_pak(out)
+    print(f"Built {MOD_NAME}.pak/.utoc/.ucas in {out}")
 
 
 if __name__ == "__main__":
